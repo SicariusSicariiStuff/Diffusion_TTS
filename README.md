@@ -21,7 +21,7 @@ conda activate textgen
 python server.py --extensions booga_tts
 ```
 
-# Original TorToiSe readme:
+Original TorToiSe readme:
 
 Tortoise is a text-to-speech program built with the following priorities:
 
