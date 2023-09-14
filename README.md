@@ -1,6 +1,6 @@
 # TorToiSe Extension for Booga that actually works
 
-Fast booga install: (assuming you use Linux and you cloned booga to home dir)
+Fast booga_tts install: (assuming you use Linux and you cloned booga into the home dir)
 
 ```shell
 cd ~/text-generation-webui/extensions/
