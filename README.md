@@ -15,7 +15,7 @@ conda activate textgen
 #Installing minimal number of packages:
 pip install progressbar librosa num2words rotary_embedding_torch inflect unidecode
 
-#Everything should work now, unless there was a fuckery with the dependencies (conda?)
+#Everything should work now, unless there was a problem with the dependencies (conda?)
 #Lets try to run it, a custom model should be automatically downloaded from HuggingFace
 conda activate textgen
 python server.py --extensions booga_tts
