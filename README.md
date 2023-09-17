@@ -1,11 +1,11 @@
 # TorToiSe Extension for Booga that actually works
 
-Fast booga_tts install: (assuming you use Linux and you cloned booga into the home dir)
+Fast diffusion_tts install: (assuming you use Linux and you cloned booga into the home dir)
 
 ```shell
 cd ~/text-generation-webui/extensions/
-git clone https://github.com/SicariusSicariiStuff/booga_tts.git
-cd ~/text-generation-webui/extensions/booga_tts/
+git clone https://github.com/SicariusSicariiStuff/diffusion_tts.git
+cd ~/text-generation-webui/extensions/diffusion_tts/
 #tts_preprocessor.py should go to modules
 mv tts_preprocessor.py ~/text-generation-webui/modules/
 ####
@@ -18,7 +18,7 @@ pip install progressbar librosa num2words rotary_embedding_torch inflect unideco
 #Everything should work now, unless there was a problem with the dependencies (conda?)
 #Lets try to run it, a custom model should be automatically downloaded from HuggingFace
 conda activate textgen
-python server.py --extensions booga_tts
+python server.py --extensions diffusion_tts
 ```
 
 Original TorToiSe readme:
