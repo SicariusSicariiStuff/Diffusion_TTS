@@ -4,7 +4,7 @@ from num2words import num2words
 
 punctuation = r'[\s,.?!/)\'\]>]'
 alphabet_map = {
-    "A": " Ei ",
+    "A": " Eh ",
     "B": " Bee ",
     "C": " See ",
     "D": " Dee ",
@@ -29,7 +29,7 @@ alphabet_map = {
     "W": " Double You ",
     "X": " Ex ",
     "Y": " Why ",
-    "Z": " Zed "  # Zed is weird, as I (da3dsoul) am American, but most of the voice models sound British, so it matches
+    "Z": " Zed "
 }
 
 
@@ -56,9 +56,12 @@ def replace_invalid_chars(string):
     string = remove_surrounded_chars(string)
     string = string.replace('"', '')
     string = string.replace('`', '')
+    string = string.replace("'","")
     string = string.replace('\u201D', '').replace('\u201C', '')  # right and left quote
     string = string.replace('\u201F', '')  # italic looking quote
     string = string.replace('\n', ' ')
+    string = string.replace('&#x27;', '')
+    string = string.replace('AI;', 'Ei Eye')
     return string
 
 
