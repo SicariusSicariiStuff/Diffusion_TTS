@@ -61,7 +61,14 @@ def replace_invalid_chars(string):
     string = string.replace('\u201F', '')  # italic looking quote
     string = string.replace('\n', ' ')
     string = string.replace('&#x27;', '')
-    string = string.replace('AI;', 'Ei Eye')
+    string = string.replace('AI;', 'Artificial Intelligence!')
+    string = string.replace('iddqd;', 'Immortality cheat code')
+    string = string.replace('😉;', 'wink wink!')
+    string = string.replace(';);', 'wink wink!')
+    string = string.replace(';-);', 'wink wink!')
+    string = string.replace(':D', '*laughs* Ahahaha!')
+    string = string.replace(';D', '*laughs* Ahahaha!')
+    string = string.replace(':-D', '*laughs* Ahahaha!')
     return string
 
 
