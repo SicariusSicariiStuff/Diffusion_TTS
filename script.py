@@ -30,19 +30,22 @@ params = {
     'preset': 'ultra_fast',
     'model_swap': False,
     'seed': 0,
-    'sentence_length': 12,
+    'sentence_length': 20,
     'show_text': True,
     'autoplay': True,
     'k': 1,
-    'num_autoregressive_samples': 2,
+    'num_autoregressive_samples': 1,
     'temperature': 0.5,
     'top_p': 1,
-    'cond_free': None,
+    'cond_free': True,
     'cond_free_k': 0,
-    'diffusion_iterations': 30,
+    'diffusion_iterations': 10,
     'length_penalty': 8,
     'repetition_penalty': 8,
     'cvvp_amount': 0,
+    'kv_cache': True,
+    'use_fp16': True,
+    'cond_free': True,
     'diffusion_temperature': 1,
 
     'tuning_settings': {
@@ -63,7 +66,7 @@ params = {
 
 # Presets are defined here.
 preset_options = {
-    'ultra_fast': {'num_autoregressive_samples': 16, 'diffusion_iterations': 20, 'cond_free': False},
+    'ultra_fast': {'num_autoregressive_samples': 1, 'diffusion_iterations': 10, 'cond_free': True},
     'fast': {'num_autoregressive_samples': 96, 'diffusion_iterations': 80},
     'standard': {'num_autoregressive_samples': 256, 'diffusion_iterations': 200},
     'high_quality': {'num_autoregressive_samples': 256, 'diffusion_iterations': 400},
@@ -151,7 +154,8 @@ def load_model():
         if not Path(models_dir).is_dir():
             Path(models_dir).mkdir(parents=True, exist_ok=True)
 
-        api.MODELS_DIR = os.path.join(models_dir, 'tortoise')
+        #api.MODELS_DIR = os.path.join(models_dir, 'Diffusion_TTS_Models')
+        api.MODELS_DIR = os.path.abspath(os.path.join(models_dir, '..', 'extensions/Diffusion_TTS//Diffusion_TTS_models'))
         tts = api.TextToSpeech(models_dir=api.MODELS_DIR)
         samples, latents = audio.load_voice(voice=params['voice'], extra_voice_dirs=extra_voice_dirs)
     except Exception as e:
