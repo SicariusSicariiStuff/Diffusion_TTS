@@ -25,7 +25,7 @@ from tortoise.utils.wav2vec_alignment import Wav2VecAlignment
 from contextlib import contextmanager
 pbar = None
 
-MODELS_DIR = os.environ.get('TORTOISE_MODELS_DIR', os.path.realpath(os.path.join(os.getcwd(), './extensions/booga_tts/models/')))
+MODELS_DIR = os.environ.get('TORTOISE_MODELS_DIR', os.path.realpath(os.path.join(os.getcwd(), './extensions/Diffusion_TTS/models/')))
 DEFAULT_MODELS_DIR = MODELS_DIR
 
 MODELS = {
@@ -342,7 +342,7 @@ class TextToSpeech:
                     'cond_free_k': 0, 'diffusion_temperature': 1.0}
         # Presets are defined here.
         presets = {
-            'ultra_fast': {'num_autoregressive_samples': 16, 'diffusion_iterations': 30, 'cond_free': False},
+            'ultra_fast': {'num_autoregressive_samples': 1, 'diffusion_iterations': 10, 'cond_free': True},
             'fast': {'num_autoregressive_samples': 96, 'diffusion_iterations': 80},
             'standard': {'num_autoregressive_samples': 256, 'diffusion_iterations': 200},
             'high_quality': {'num_autoregressive_samples': 256, 'diffusion_iterations': 400},
@@ -430,6 +430,7 @@ class TextToSpeech:
             calm_token = 83  # This is the token for coding silence, which is fixed in place with "fix_autoregressive_output"
             if verbose:
                 print("Generating autoregressive samples..")
+                print(text)
             if not torch.backends.mps.is_available():
                 with self.temporary_cuda(self.autoregressive
                 ) as autoregressive, torch.autocast(device_type="cuda", dtype=torch.float16, enabled=self.half):
