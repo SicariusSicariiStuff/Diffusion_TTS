@@ -342,7 +342,7 @@ class TextToSpeech:
                     'cond_free_k': 0, 'diffusion_temperature': 1.0}
         # Presets are defined here.
         presets = {
-            'ultra_fast': {'num_autoregressive_samples': 1, 'diffusion_iterations': 10, 'cond_free': True},
+            'ultra_fast': {'num_autoregressive_samples': 16, 'diffusion_iterations': 10, 'cond_free': True},
             'fast': {'num_autoregressive_samples': 96, 'diffusion_iterations': 80},
             'standard': {'num_autoregressive_samples': 256, 'diffusion_iterations': 200},
             'high_quality': {'num_autoregressive_samples': 256, 'diffusion_iterations': 400},
