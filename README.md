@@ -1,6 +1,6 @@
 # TorToiSe Extension for Booga that actually works
 
-# NOTE: This is UNTESTED for Windows
+# NOTE: This is UNTESTED for Windows 
 Fast Diffusion_TTS install: (assuming you use Linux and you cloned booga into the home dir)
 
 ```shell
