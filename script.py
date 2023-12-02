@@ -390,7 +390,7 @@ def ui():
     controls['convert_confirm'].click(
             lambda: [gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)], None, controls['convert_arr']).then(
             remove_tts_from_history, gradio('history'), gradio('history')).then(
-            chat.save_persistent_history, gradio('history', 'character_menu', 'mode'), None).then(
+            chat.save_history, gradio('history', 'character_menu', 'mode'), None).then(
             chat.redraw_html, gradio(ui_chat.reload_arr), gradio('display'))
 
     controls['convert_cancel'].click(lambda: [gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)], None, controls['convert_arr'])
