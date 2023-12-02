@@ -4,4 +4,5 @@ num2words
 rotary_embedding_torch
 inflect
 unidecode
+torch_grammar
 torchaudio
