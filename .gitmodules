@@ -1,0 +1,3 @@
+[submodule "tortoise"]
+	path = tortoise
+	url = https://git.ecker.tech/mrq/tortoise-tts
