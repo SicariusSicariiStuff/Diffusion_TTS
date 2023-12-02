@@ -1,5 +1,8 @@
 # TorToiSe Extension for Booga that actually works
 
+News:
+Works with the latest oobabooga as of dec 2023.
+-Make sure that num_autoregression_samples is at LEAST 16
 # NOTE: This is UNTESTED for Windows 
 Fast Diffusion_TTS install: (assuming you use Linux and you cloned booga into the home dir)
 
