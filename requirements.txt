@@ -1,7 +1,7 @@
 progressbar
 librosa
 num2words
-rotary_embedding_torch
+rotary_embedding_torch==0.4.0
 inflect
 unidecode
 torchaudio
