@@ -16,14 +16,13 @@ from modules.utils import gradio
 
 import gradio as gr
 
-sys.path.append(os.path.join(os.path.dirname(__file__), 'tortoise'))
 from tortoise import api
 from tortoise.utils import audio
 from tortoise.utils.text import split_and_recombine_text
 
 params = {
     'activate': True,
-    'voice_dir': None,
+    'voice_dir': "./voices",
     'output_dir': None,
     'voice': 'sp1',
     'preset': 'ultra_fast',
