@@ -20,9 +20,12 @@ from tortoise import api
 from tortoise.utils import audio
 from tortoise.utils.text import split_and_recombine_text
 
+voice_dir_path = Path(os.path.dirname(__file__), "voices")
+voice_dir_default = str(voice_dir_path) if voice_dir_path.is_dir() else None
+
 params = {
     'activate': True,
-    'voice_dir': "./voices",
+    'voice_dir': voice_dir_default,
     'output_dir': None,
     'voice': 'sp1',
     'preset': 'ultra_fast',
