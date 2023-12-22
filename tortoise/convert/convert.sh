@@ -1,1 +1,0 @@
-for a in $(find "in/" -maxdepth 1 -not -name '.gitkeep' -type f); do ffmpeg -i "$a" -ac 1 "out/$(basename $a).wav"; done

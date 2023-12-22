@@ -17,10 +17,9 @@ from modules.utils import gradio
 import gradio as gr
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'tortoise'))
-from .tortoise.tortoise import api
-from .tortoise.tortoise.utils import audio
-from .tortoise.tortoise.utils.text import split_and_recombine_text
-
+from tortoise import api
+from tortoise.utils import audio
+from tortoise.utils.text import split_and_recombine_text
 
 params = {
     'activate': True,
@@ -70,7 +69,6 @@ preset_options = {
     'fast': {'num_autoregressive_samples': 96, 'diffusion_iterations': 80},
     'standard': {'num_autoregressive_samples': 256, 'diffusion_iterations': 200},
     'high_quality': {'num_autoregressive_samples': 256, 'diffusion_iterations': 400},
-            #, 'diffusion_sampler': "P", 'top_p': 1, 'diffusion_temperature': 0.5, 'length_penalty': 8, 'repetition_penalty': 8
 }
 
 presets = list(preset_options.keys())

@@ -1,7 +1,8 @@
-progressbar
-librosa
+progressbar==2.5
+librosa==0.8.1
 num2words
 rotary_embedding_torch==0.4.0
-inflect
+inflect==7.0.0
 unidecode
 torchaudio
+tortoise-tts @ git+https://github.com/TenebraAI/tortoise-tts@bc8b95a

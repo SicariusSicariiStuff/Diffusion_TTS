@@ -1,2 +1,0 @@
-recursive-include tortoise/data *
-recursive-include tortoise/voices *
