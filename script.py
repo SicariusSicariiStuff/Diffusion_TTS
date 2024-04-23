@@ -9,8 +9,8 @@ import torchaudio
 
 from pathlib import Path
 import time
-
-from modules import chat, tts_preprocessor, ui_chat
+from modules import chat, shared, tts_preprocessor, ui_chat
+from modules.models import reload_model as load_llm, unload_model as unload_llm
 from modules.utils import gradio
 
 import gradio as gr
