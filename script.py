@@ -16,13 +16,6 @@ from modules.utils import gradio
 import gradio as gr
 import requests
 import json
-import os
-
-# Set environment variables for offline mode
-os.environ['TRANSFORMERS_OFFLINE'] = '1'
-os.environ['HF_DATASETS_OFFLINE'] = '1'
-
-# Now you can load your models and tokenizers as usual, assuming they have been previously cached
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'tortoise'))
 from .tortoise.tortoise import api
