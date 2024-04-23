@@ -9,6 +9,7 @@ import torchaudio
 
 from pathlib import Path
 import time
+
 from modules import chat, shared, tts_preprocessor, ui_chat
 from modules.models import reload_model as load_llm, unload_model as unload_llm
 from modules.utils import gradio
@@ -21,7 +22,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'tortoise'))
 from .tortoise.tortoise import api
 from .tortoise.tortoise.utils import audio
 from .tortoise.tortoise.utils.text import split_and_recombine_text
-
 
 params = {
     'activate': True,
@@ -76,8 +76,8 @@ preset_options = {
 
 presets = list(preset_options.keys())
 model = voice_samples = conditioning_latents = voices = current_params = None
+streaming_state = shared.args.no_stream if hasattr(shared.args, 'no_stream') else False  # remember if chat streaming was enabled
 controls = {}
-
 
 def set_preset(preset):
     global params
@@ -98,7 +98,6 @@ def set_preset(preset):
 
         params['tuning_settings'][opt] = settings[opt]
 
-
 def get_preset_settings(preset):
     settings = {
         'temperature': 0.8, 'length_penalty': 1.0, 'repetition_penalty': 2.0, 'top_p': 0.8, 'cond_free_k': 2.0,
@@ -108,7 +107,6 @@ def get_preset_settings(preset):
 
     settings.update(preset_options[preset])
     return settings
-
 
 def get_gen_kwargs(par):
     gen_kwargs = {
@@ -137,23 +135,22 @@ def get_gen_kwargs(par):
 
     return gen_kwargs
 
-
 def get_voices():
     extra_voice_dirs = [params['voice_dir']] if params['voice_dir'] is not None and Path(params['voice_dir']).is_dir() else []
     detected_voices = audio.get_voices(extra_voice_dirs=extra_voice_dirs)
     detected_voices = sorted(detected_voices.keys()) if len(detected_voices) > 0 else []
     return detected_voices
 
-
 def load_model():
     # Init TTS
     try:
         global params
         extra_voice_dirs = [params['voice_dir']] if params['voice_dir'] is not None else []
-        models_dir = api.MODELS_DIR
+        models_dir = shared.args.model_dir if hasattr(shared.args, 'model_dir') and shared.args.model_dir is not None else api.MODELS_DIR
         if not Path(models_dir).is_dir():
             Path(models_dir).mkdir(parents=True, exist_ok=True)
 
+        #api.MODELS_DIR = os.path.join(models_dir, 'Diffusion_TTS_Models')
         api.MODELS_DIR = os.path.abspath(os.path.join(models_dir, '..', 'extensions/Diffusion_TTS//Diffusion_TTS_models'))
         tts = api.TextToSpeech(models_dir=api.MODELS_DIR)
         samples, latents = audio.load_voice(voice=params['voice'], extra_voice_dirs=extra_voice_dirs)
@@ -163,13 +160,20 @@ def load_model():
 
     return tts, samples, latents
 
+def unload_model():
+    try:
+        global model, voice_samples, conditioning_latents
+        model = voice_samples = conditioning_latents = None
+        gc.collect()
+        torch.cuda.empty_cache()
+    except:
+        pass
 
 def remove_tts_from_history(history):
     for i, entry in enumerate(history['internal']):
         history['visible'][i] = [history['visible'][i][0], entry[1]]
 
     return history
-
 
 def toggle_text_in_history(history):
     for i, entry in enumerate(history['visible']):
@@ -183,7 +187,6 @@ def toggle_text_in_history(history):
 
     return history
 
-
 def state_modifier(state):
     if not params['activate']:
         return state
@@ -191,14 +194,12 @@ def state_modifier(state):
     state['stream'] = False
     return state
 
-
 def input_modifier(string, state):
     if not params['activate']:
         return string
 
-    print("*Is recording a voice message...*")
+    shared.processing_message = "*Is recording a voice message...*"
     return string
-
 
 def history_modifier(history):
     # Remove autoplay from the last reply
@@ -209,7 +210,6 @@ def history_modifier(history):
         ]
 
     return history
-
 
 def output_modifier(string, state):
     """
@@ -235,6 +235,10 @@ def output_modifier(string, state):
         if model is None:
             refresh_model = True
 
+        if params['model_swap']:
+            unload_llm()
+            refresh_model = True
+
         if refresh_model:
             model, voice_samples, conditioning_latents = load_model()
 
@@ -249,6 +253,10 @@ def output_modifier(string, state):
 
         if string == '':
             string = '*Empty reply, try regenerating*'
+            if params['model_swap']:
+                unload_model()
+                load_llm()
+
             return string
 
         out_dir_root = params['output_dir'] if params['output_dir'] is not None and Path(params['output_dir']).is_dir() \
@@ -274,13 +282,19 @@ def output_modifier(string, state):
         if params['show_text']:
             string += f'\n\n{original_string}'
 
-        print("*Is typing...*")
+        shared.processing_message = "*Is typing...*"
+        if params['model_swap']:
+            unload_model()
+            load_llm()
 
         return string
     except Exception as e:
-        print(traceback.format_exc())
+        shared.processing_message = "*Is typing...*"
+        shared.args.no_stream = streaming_state  # restore the streaming option to the previous value
+        if params['model_swap']:
+            unload_model()
+            load_llm()
         return traceback.format_exc()
-
 
 def generate_audio(tts, samples, latents, output_dir, output_file, gen_kwargs, texts):
     # only cat if it's needed
@@ -304,14 +318,13 @@ def generate_audio(tts, samples, latents, output_dir, output_file, gen_kwargs, t
     full_audio = torch.cat(all_parts, dim=-1)
     torchaudio.save(str(output_file), full_audio, 24000)
 
-
 def setup():
     global voices, model, voice_samples, conditioning_latents, current_params
     current_params = params.copy()
     voices = get_voices()
     set_preset(params['preset'])
-    model, voice_samples, conditioning_latents = load_model()
-
+    if not params['model_swap']:
+        model, voice_samples, conditioning_latents = load_model()
 
 def ui():
     global controls, params
@@ -342,7 +355,7 @@ def ui():
             controls['cond_free_k'] = gr.Number(value=tune_settings['cond_free_k'], label='cond_free_k')
             controls['diffusion_temperature'] = gr.Number(value=tune_settings['diffusion_temperature'], label='diffusion_temperature')
             controls['num_autoregressive_samples'].change(lambda x: params['tuning_settings'].update({'num_autoregressive_samples': x}), controls['num_autoregressive_samples'], outputs=None)
-            controls['temperature'].change(lambda x: params['tuning_settings'].update({'temperature': x}), controls['temperature'], outputs=None)
+            controls['temperature'].change(lambda x: params['tuning_settings'].update({'temperature': x}), controls['temperature'],outputs=None)
             controls['length_penalty'].change(lambda x: params['tuning_settings'].update({'length_penalty': x}), controls['length_penalty'], outputs=None)
             controls['repetition_penalty'].change(lambda x: params['tuning_settings'].update({'repetition_penalty': x}), controls['repetition_penalty'], outputs=None)
             controls['top_p'].change(lambda x: params['tuning_settings'].update({'top_p': x}), controls['top_p'], outputs=None)
@@ -363,7 +376,7 @@ def ui():
     controls['convert_confirm'].click(
             lambda: [gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)], None, controls['convert_arr']).then(
             remove_tts_from_history, gradio('history'), gradio('history')).then(
-            chat.save_history, gradio('history', 'character_menu', 'mode'), None).then(
+            chat.save_history, gradio('history', 'character_menu', 'mode', 'unique_id'), None).then(
             chat.redraw_html, gradio(ui_chat.reload_arr), gradio('display'))
 
     controls['convert_cancel'].click(lambda: [gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)], None, controls['convert_arr'])
@@ -372,7 +385,7 @@ def ui():
     controls['show_text'].change(
             lambda x: params.update({"show_text": x}), controls['show_text'], None).then(
             toggle_text_in_history, gradio('history'), gradio('history')).then(
-            chat.save_history, gradio('history', 'character_menu', 'mode'), None).then(
+            chat.save_history, gradio('history', 'character_menu', 'mode', 'unique_id'), None).then(
             chat.redraw_html, gradio(ui_chat.reload_arr), gradio('display'))
 
     # Event functions to update the parameters in the backend
@@ -397,7 +410,6 @@ def ui():
     controls['seed_picker'].change(lambda x: params.update({'seed': x}), controls['seed_picker'], None)
     controls['sentence_picker'].change(lambda x: params.update({'sentence_length': x}), controls['sentence_picker'], None)
 
-
 def update_voice_dir(x, voice):
     global controls, params, voices
     params.update({"voice_dir": x})
@@ -405,7 +417,6 @@ def update_voice_dir(x, voice):
     controls['voice_dropdown'].choices = voices
     value = voice if voice in voices else voices[0] if len(voices) > 0 else None
     return gr.update(choices=voices, value=value, visible=True)
-
 
 def update_preset(preset):
     global params
