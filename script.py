@@ -10,11 +10,19 @@ import torchaudio
 from pathlib import Path
 import time
 
-from modules import chat, shared, tts_preprocessor, ui_chat
-from modules.models import reload_model as load_llm, unload_model as unload_llm
+from modules import chat, tts_preprocessor, ui_chat
 from modules.utils import gradio
 
 import gradio as gr
+import requests
+import json
+import os
+
+# Set environment variables for offline mode
+os.environ['TRANSFORMERS_OFFLINE'] = '1'
+os.environ['HF_DATASETS_OFFLINE'] = '1'
+
+# Now you can load your models and tokenizers as usual, assuming they have been previously cached
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'tortoise'))
 from .tortoise.tortoise import api
@@ -75,7 +83,6 @@ preset_options = {
 
 presets = list(preset_options.keys())
 model = voice_samples = conditioning_latents = voices = current_params = None
-streaming_state = shared.args.no_stream  # remember if chat streaming was enabled
 controls = {}
 
 
@@ -150,11 +157,10 @@ def load_model():
     try:
         global params
         extra_voice_dirs = [params['voice_dir']] if params['voice_dir'] is not None else []
-        models_dir = shared.args.model_dir if hasattr(shared.args, 'model_dir') and shared.args.model_dir is not None else api.MODELS_DIR
+        models_dir = api.MODELS_DIR
         if not Path(models_dir).is_dir():
             Path(models_dir).mkdir(parents=True, exist_ok=True)
 
-        #api.MODELS_DIR = os.path.join(models_dir, 'Diffusion_TTS_Models')
         api.MODELS_DIR = os.path.abspath(os.path.join(models_dir, '..', 'extensions/Diffusion_TTS//Diffusion_TTS_models'))
         tts = api.TextToSpeech(models_dir=api.MODELS_DIR)
         samples, latents = audio.load_voice(voice=params['voice'], extra_voice_dirs=extra_voice_dirs)
@@ -163,16 +169,6 @@ def load_model():
         return None, None, None
 
     return tts, samples, latents
-
-
-def unload_model():
-    try:
-        global model, voice_samples, conditioning_latents
-        model = voice_samples = conditioning_latents = None
-        gc.collect()
-        torch.cuda.empty_cache()
-    except:
-        pass
 
 
 def remove_tts_from_history(history):
@@ -207,7 +203,7 @@ def input_modifier(string, state):
     if not params['activate']:
         return string
 
-    shared.processing_message = "*Is recording a voice message...*"
+    print("*Is recording a voice message...*")
     return string
 
 
@@ -246,10 +242,6 @@ def output_modifier(string, state):
         if model is None:
             refresh_model = True
 
-        if params['model_swap']:
-            unload_llm()
-            refresh_model = True
-
         if refresh_model:
             model, voice_samples, conditioning_latents = load_model()
 
@@ -264,10 +256,6 @@ def output_modifier(string, state):
 
         if string == '':
             string = '*Empty reply, try regenerating*'
-            if params['model_swap']:
-                unload_model()
-                load_llm()
-
             return string
 
         out_dir_root = params['output_dir'] if params['output_dir'] is not None and Path(params['output_dir']).is_dir() \
@@ -293,18 +281,11 @@ def output_modifier(string, state):
         if params['show_text']:
             string += f'\n\n{original_string}'
 
-        shared.processing_message = "*Is typing...*"
-        if params['model_swap']:
-            unload_model()
-            load_llm()
+        print("*Is typing...*")
 
         return string
     except Exception as e:
-        shared.processing_message = "*Is typing...*"
-        shared.args.no_stream = streaming_state  # restore the streaming option to the previous value
-        if params['model_swap']:
-            unload_model()
-            load_llm()
+        print(traceback.format_exc())
         return traceback.format_exc()
 
 
@@ -336,8 +317,7 @@ def setup():
     current_params = params.copy()
     voices = get_voices()
     set_preset(params['preset'])
-    if not params['model_swap']:
-        model, voice_samples, conditioning_latents = load_model()
+    model, voice_samples, conditioning_latents = load_model()
 
 
 def ui():
@@ -461,3 +441,18 @@ def update_preset(preset):
         # diffusion_temperature
         gr.update(value=tune['diffusion_temperature'], visible=True)
     ]
+
+def call_openai_api(prompt):
+    url = "http://127.0.0.1:5000/v1/completions"
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = {
+        "prompt": prompt,
+        "max_tokens": 200,
+        "temperature": 1,
+        "top_p": 0.9,
+        "seed": 10
+    }
+    response = requests.post(url, headers=headers, json=data)
+    return response.json()["choices"][0]["text"]
