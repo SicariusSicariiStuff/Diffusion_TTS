@@ -453,10 +453,10 @@ def call_openai_api(prompt):
     }
     data = {
         "prompt": prompt,
-        "max_tokens": 200,
-        "temperature": 1,
-        "top_p": 0.9,
-        "seed": 10
+        "max_tokens": 'max_mel_tokens',
+        "temperature": 'temperature',
+        "top_p": 'top_p',
+        "seed": 'seed'
     }
     response = requests.post(url, headers=headers, json=data)
     return response.json()["choices"][0]["text"]
