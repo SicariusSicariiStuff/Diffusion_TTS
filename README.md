@@ -22,14 +22,14 @@ mv tts_preprocessor.py ~/text-generation-webui/modules/
 ####
 #conda activate textgen (these are the default booga settings)
 cd ~/text-generation-webui/
-conda activate textgen
+conda activate ~/text-generation-webui/installer_files/env
 #Installing minimal number of packages:
 pip install progressbar librosa num2words rotary_embedding_torch inflect unidecode
 
 #Everything should work now, unless there was a problem with the dependencies (conda?)
 #Lets try to run it, a custom model should be automatically downloaded from HuggingFace
-conda activate textgen
-python server.py --extensions Diffusion_TTS
+
+./start_linux.sh --extensions Diffusion_TTS
 ```
 
 Original TorToiSe readme:
