@@ -1,9 +1,16 @@
 # TorToiSe Extension for Booga that actually works
 
 News:
-Works with the latest oobabooga as of dec 2023.
+Tested working with the latest oobabooga on Windows as of 4.25.24
 -Make sure that num_autoregression_samples is at LEAST 16
-# NOTE: This is UNTESTED for Windows 
+# NOTE: OPENAI API MUST BE ENABLED IN OOBABOOGA
+
+# NOTE: Windows Users MUST move 
+tts_preprocessor.py file from the Diffusion_TTS folder in ~/text-generation-webui/extensions/ 
+to the 
+Modules Folder located at ~/text-generation-webui/modules/
+For the extension to work
+
 Fast Diffusion_TTS install: (assuming you use Linux and you cloned booga into the home dir)
 
 ```shell
@@ -37,6 +44,9 @@ This repo contains all the code needed to run Tortoise TTS in inference mode.
 Manuscript: https://arxiv.org/abs/2305.07243
 
 ### Version history
+### v2.9; 2024/4/25
+- added a filter to warnings and added warning import to suppress OobaBooga Code Regression issues for user friendly debugging at beginning of code
+- Refactored API Calls to use OpenAI API standard as ChatStream is no longer used and depreciated, should work fin now
 ### v2.8; 2023/9/13
 - Added custom tokenizer for non-english models
 #### v2.7; 2023/7/26
