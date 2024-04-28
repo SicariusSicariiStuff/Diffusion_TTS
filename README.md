@@ -2,8 +2,7 @@
 
 News:
 Tested working with the latest oobabooga on Windows as of 4.25.24
--Make sure that num_autoregression_samples is at LEAST 16
-# NOTE: OPENAI API MUST BE ENABLED IN OOBABOOGA
+# NOTE: OPENAI API MUST BE ENABLED IN OOBABOOGA + num_autoregression_samples NEEDS TO BE AT LEAST 16
 
 # NOTE: Windows Users MUST move 
 tts_preprocessor.py file from the Diffusion_TTS folder in ~/text-generation-webui/extensions/ 
