@@ -30,13 +30,13 @@ DEFAULT_MODELS_DIR = MODELS_DIR
 
 MODELS = {
     'autoregressive.pth': 'https://huggingface.co/SicariusSicariiStuff/TTS_Lola/resolve/main/autoregressive.pth',
-    'classifier.pth': 'https://huggingface.co/jbetker/tortoise-tts-v2/resolve/main/.models/classifier.pth',
-    'clvp2.pth': 'https://huggingface.co/jbetker/tortoise-tts-v2/resolve/main/.models/clvp2.pth',
-    'cvvp.pth': 'https://huggingface.co/jbetker/tortoise-tts-v2/resolve/main/.models/cvvp.pth',
-    'diffusion_decoder.pth': 'https://huggingface.co/jbetker/tortoise-tts-v2/resolve/main/.models/diffusion_decoder.pth',
-    'vocoder.pth': 'https://huggingface.co/jbetker/tortoise-tts-v2/resolve/main/.models/vocoder.pth',
-    'rlg_auto.pth': 'https://huggingface.co/jbetker/tortoise-tts-v2/resolve/main/.models/rlg_auto.pth',
-    'rlg_diffuser.pth': 'https://huggingface.co/jbetker/tortoise-tts-v2/resolve/main/.models/rlg_diffuser.pth',
+    'classifier.pth': 'https://huggingface.co/SicariusSicariiStuff/Diffusion_TTS/resolve/main/classifier.pth',
+    'clvp2.pth': 'https://huggingface.co/SicariusSicariiStuff/Diffusion_TTS/resolve/main/clvp2.pth',
+    'cvvp.pth': 'https://huggingface.co/SicariusSicariiStuff/Diffusion_TTS/resolve/main/cvvp.pth',
+    'diffusion_decoder.pth': 'https://huggingface.co/SicariusSicariiStuff/Diffusion_TTS/resolve/main/diffusion_decoder.pth',
+    'vocoder.pth': 'https://huggingface.co/SicariusSicariiStuff/Diffusion_TTS/resolve/main/vocoder.pth',
+    'rlg_auto.pth': 'https://huggingface.co/SicariusSicariiStuff/Diffusion_TTS/resolve/main/rlg_auto.pth',
+    'rlg_diffuser.pth': 'https://huggingface.co/SicariusSicariiStuff/Diffusion_TTS/resolve/main/rlg_diffuser.pth',
 
     'bigvgan_base_24khz_100band.pth': 'https://huggingface.co/ecker/tortoise-tts-models/resolve/main/models/bigvgan_base_24khz_100band.pth',
     'bigvgan_24khz_100band.pth': 'https://huggingface.co/ecker/tortoise-tts-models/resolve/main/models/bigvgan_24khz_100band.pth',
