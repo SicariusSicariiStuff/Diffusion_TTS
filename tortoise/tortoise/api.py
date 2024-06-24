@@ -37,6 +37,7 @@ MODELS = {
     'vocoder.pth': 'https://huggingface.co/SicariusSicariiStuff/Diffusion_TTS/resolve/main/vocoder.pth',
     'rlg_auto.pth': 'https://huggingface.co/SicariusSicariiStuff/Diffusion_TTS/resolve/main/rlg_auto.pth',
     'rlg_diffuser.pth': 'https://huggingface.co/SicariusSicariiStuff/Diffusion_TTS/resolve/main/rlg_diffuser.pth',
+    'dvae.pth': 'https://huggingface.co/SicariusSicariiStuff/Diffusion_TTS/resolve/main/dvae.pth',    
 
     'bigvgan_base_24khz_100band.pth': 'https://huggingface.co/ecker/tortoise-tts-models/resolve/main/models/bigvgan_base_24khz_100band.pth',
     'bigvgan_24khz_100band.pth': 'https://huggingface.co/ecker/tortoise-tts-models/resolve/main/models/bigvgan_24khz_100band.pth',
