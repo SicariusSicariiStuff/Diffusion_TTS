@@ -29,7 +29,7 @@ MODELS_DIR = os.environ.get('TORTOISE_MODELS_DIR', os.path.realpath(os.path.join
 DEFAULT_MODELS_DIR = MODELS_DIR
 
 MODELS = {
-    'autoregressive.pth': 'https://huggingface.co/divinit/sp1/resolve/main/autoregressive.pth',
+    'autoregressive.pth': 'https://huggingface.co/SicariusSicariiStuff/TTS_Lola/resolve/main/autoregressive.pth',
     'classifier.pth': 'https://huggingface.co/jbetker/tortoise-tts-v2/resolve/main/.models/classifier.pth',
     'clvp2.pth': 'https://huggingface.co/jbetker/tortoise-tts-v2/resolve/main/.models/clvp2.pth',
     'cvvp.pth': 'https://huggingface.co/jbetker/tortoise-tts-v2/resolve/main/.models/cvvp.pth',
